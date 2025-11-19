@@ -53,7 +53,7 @@ class SnakeGame:
         self.food = Point(x, y)
         if self.food in self.snake:
             self._place_food()
-
+        
     def play_step(self):
         # 1. collect user input
         for event in pygame.event.get():
@@ -73,8 +73,8 @@ class SnakeGame:
         # 2. move
         self._move(self.direction) # update the head
         self.snake.insert(0, self.head)
-
-         # 3. check if game over
+        
+        # 3. check if game over
         game_over = False
         if self._is_collision():
             game_over = True
@@ -102,7 +102,7 @@ class SnakeGame:
             return True
         
         return False
-    
+        
     def _update_ui(self):
         self.display.fill(BLACK)
         
@@ -127,3 +127,21 @@ class SnakeGame:
             y += BLOCK_SIZE
         elif direction == Direction.UP:
             y -= BLOCK_SIZE
+            
+        self.head = Point(x, y)
+            
+
+if __name__ == '__main__':
+    game = SnakeGame()
+    
+    # game loop
+    while True:
+        game_over, score = game.play_step()
+        
+        if game_over == True:
+            break
+        
+    print('Final Score', score)
+        
+        
+    pygame.quit()
