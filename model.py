@@ -26,6 +26,7 @@ BLOCK_SIZE = 20
 SPEED = 20
 
 class SnakeGame:
+    
     def __init__(self, w=640, h=480):
         self.w = w
         self.h = h
@@ -68,7 +69,8 @@ class SnakeGame:
                     self.direction = Direction.UP
                 elif event.key == pygame.K_DOWN:
                     self.direction = Direction.DOWN
-                    # 2. move
+        
+        # 2. move
         self._move(self.direction) # update the head
         self.snake.insert(0, self.head)
         
@@ -107,8 +109,8 @@ class SnakeGame:
         for pt in self.snake:
             pygame.draw.rect(self.display, BLUE1, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
             pygame.draw.rect(self.display, BLUE2, pygame.Rect(pt.x+4, pt.y+4, 12, 12))
-
-            pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
+            
+        pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
         
         text = font.render("Score: " + str(self.score), True, WHITE)
         self.display.blit(text, [0, 0])
@@ -125,3 +127,21 @@ class SnakeGame:
             y += BLOCK_SIZE
         elif direction == Direction.UP:
             y -= BLOCK_SIZE
+            
+        self.head = Point(x, y)
+            
+
+if __name__ == '__main__':
+    game = SnakeGame()
+    
+    # game loop
+    while True:
+        game_over, score = game.play_step()
+        
+        if game_over == True:
+            break
+        
+    print('Final Score', score)
+        
+        
+    pygame.quit()
