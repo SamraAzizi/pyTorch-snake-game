@@ -32,6 +32,7 @@ class Agent:
         dir_r = game.direction == Direction.RIGHT
         dir_u = game.direction == Direction.UP
         dir_d = game.direction == Direction.DOWN
+
         state = [
             # Danger straight
             (dir_r and game.is_collision(point_r)) or 
@@ -64,7 +65,7 @@ class Agent:
             game.food.y > game.head.y  # food down
             ]
 
-            return np.array(state, dtype=int)
+        return np.array(state, dtype=int)
 
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done)) # popleft if MAX_MEMORY is reached
@@ -79,6 +80,7 @@ class Agent:
         self.trainer.train_step(states, actions, rewards, next_states, dones)
         #for state, action, reward, nexrt_state, done in mini_sample:
         #    self.trainer.train_step(state, action, reward, next_state, done)
+
     def train_short_memory(self, state, action, reward, next_state, done):
         self.trainer.train_step(state, action, reward, next_state, done)
 
@@ -96,6 +98,8 @@ class Agent:
             final_move[move] = 1
 
         return final_move
+
+
 def train():
     plot_scores = []
     plot_mean_scores = []
@@ -113,6 +117,7 @@ def train():
         # perform move and get new state
         reward, done, score = game.play_step(final_move)
         state_new = agent.get_state(game)
+
         # train short memory
         agent.train_short_memory(state_old, final_move, reward, state_new, done)
 
@@ -124,3 +129,19 @@ def train():
             game.reset()
             agent.n_games += 1
             agent.train_long_memory()
+
+            if score > record:
+                record = score
+                agent.model.save()
+
+            print('Game', agent.n_games, 'Score', score, 'Record:', record)
+
+            plot_scores.append(score)
+            total_score += score
+            mean_score = total_score / agent.n_games
+            plot_mean_scores.append(mean_score)
+            plot(plot_scores, plot_mean_scores)
+
+
+if __name__ == '__main__':
+    train()
